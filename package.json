@@ -1,0 +1,1 @@
+{"name":"studyquest-echo","version":"0.2.0","type":"module","private":true,"scripts":{"test":"node --test tests/*.test.mjs && npm run privacy","privacy":"node scripts/privacy-check.mjs"}}

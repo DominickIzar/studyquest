@@ -1,0 +1,34 @@
+// All scenarios in this module are invented for the game. Do not derive release content from personal chats.
+export const case001={
+ id:'case-001',title:'O Sinal Fantasma',subtitle:'Três transmissões. Um sinal impossível. Uma decisão.',subject:'Análise de evidências',chapter:'01',
+ facts:[
+ {id:'antenna',title:'Registro da antena',label:'TELEMETRIA',icon:'◈',text:'Uma antena desativada registrou um pulso após o desligamento oficial. O sistema não confirma se o horário estava sincronizado.',fact:'Uma medição isolada deve ser verificada com relógios e fontes independentes.',effect:{flag:'antennaChecked',trust:'eli',amount:2}},
+ {id:'map',title:'Mapa dos sensores',label:'MAPEAMENTO',icon:'▤',text:'Dois sensores próximos registraram silêncio durante o evento. O mapa revela uma zona de sombra entre os equipamentos.',fact:'Ausência de registro não prova ausência de evento se há lacunas de cobertura.',effect:{flag:'mapChecked',trust:'mara',amount:2}},
+ {id:'maintenance',title:'Diário de manutenção',label:'HISTÓRICO',icon:'✧',text:'Uma intervenção técnica foi registrada poucas horas antes do sinal. A equipe não informou alteração nos transmissores.',fact:'Correlação temporal não prova causa. É necessário verificar hipóteses alternativas.',effect:{flag:'maintenanceChecked',trust:'eli',amount:1}}
+ ],
+ questions:[
+ {id:'q1',topic:'chronology',prompt:'O relógio de um sensor pode estar errado. Qual conclusão é mais defensável?',options:['O sinal é falso.','O horário precisa ser confirmado antes de estabelecer a sequência dos eventos.','Todos os outros sensores falharam.'],correct:1,why:'Uma linha do tempo confiável depende da verificação de horários e fontes independentes.',source:'Qualidade de evidências'},
+ {id:'q2',topic:'coverage',prompt:'Dois sensores não registraram o sinal. Isso significa que ele não existiu?',options:['Não necessariamente; verifique cobertura e limitações dos sensores.','Sim, dois sensores sempre provam ausência.','O terceiro sensor deve ser ignorado.'],correct:0,why:'É preciso considerar pontos cegos, sensibilidade e funcionamento dos instrumentos.',source:'Avaliação de observações'},
+ {id:'q3',topic:'method',prompt:'Qual é o melhor próximo passo antes de divulgar uma conclusão?',options:['Anunciar uma descoberta definitiva.','Descartar os registros conflitantes.','Comparar fontes, testar hipóteses e documentar incertezas.'],correct:2,why:'Evidências verificáveis e incerteza explícita tornam a investigação mais robusta.',source:'Método investigativo'}
+ ],
+ scenes:{
+ briefing:{speaker:'Mara Voss',role:'DIRETORA DO ARQUIVO',eyebrow:'01 / O CHAMADO',title:'O sinal que não deveria existir',text:'“O observatório abandonado de Boreal captou uma transmissão impossível. Um sistema estava desligado, mas alguém — ou alguma coisa — respondeu. Preciso de um olhar independente.”',choices:[{id:'ready',label:'Aceitar a investigação',next:'investigate',effects:[{op:'add',key:'discipline',amount:1}]},{id:'question',label:'“Como um sistema desligado transmitiu?”',next:'context',effects:[{op:'relationship',key:'mara',amount:2}]}]},
+ context:{speaker:'Mara Voss',role:'DIRETORA DO ARQUIVO',eyebrow:'01 / CONTEXTO',title:'A noite do apagão',text:'“Os equipamentos foram desligados após uma tempestade. Ainda assim, uma antena registrou um pulso. Verifique os limites das medições antes de culpar alguém.”',choices:[{id:'understood',label:'Analisar os registros',next:'investigate'}]},
+ investigate:{type:'evidence',speaker:'Eli Navarro',role:'ANÁLISE TÉCNICA',eyebrow:'02 / INVESTIGAÇÃO',title:'O que os sensores revelam?',text:'“Separei três registros. Examine pelo menos dois para formar uma hipótese. Nenhuma peça, sozinha, conta a história inteira.”',minimum:2,next:'study'},
+ study:{type:'study',speaker:'Eli Navarro',role:'ANÁLISE TÉCNICA',eyebrow:'03 / REVISÃO',title:'Teste seu raciocínio',text:'“Responda às perguntas sobre evidências e incerteza. Você pode revisar seus erros sem penalidade.”',next:'confrontation'},
+ confrontation:{speaker:'Helena Prado',role:'COORDENAÇÃO CIENTÍFICA',eyebrow:'04 / CONFRONTO',title:'Uma conclusão prematura',text:'“A equipe quer anunciar a descoberta amanhã. O que sabemos realmente sobre esse sinal?”',choices:[
+ {id:'assert',label:'“Precisamos confirmar a sequência dos eventos.”',next:'response',conditions:[{type:'mastery',topic:'chronology',min:1}],effects:[{op:'relationship',key:'mara',amount:3},{op:'add',key:'analysis',amount:2}]},
+ {id:'show-evidence',label:'Mostrar a telemetria e questionar o relógio do sensor',next:'response',conditions:[{type:'flag',key:'antennaChecked'}],effects:[{op:'relationship',key:'mara',amount:4},{op:'set',key:'supportedCase',value:true}]},
+ {id:'ask',label:'Propor uma análise independente das medições',next:'response',effects:[{op:'relationship',key:'mara',amount:2},{op:'add',key:'risk',amount:2}]},
+ {id:'guess',label:'“Talvez seja mesmo um fenômeno inexplicável.”',next:'response',effects:[{op:'relationship',key:'mara',amount:-3}]}
+ ]},
+ response:{speaker:'Mara Voss',role:'DIRETORA DO ARQUIVO',eyebrow:'05 / DECISÃO',title:'A hipótese final é sua',text:'“O mundo adora respostas fáceis. Nosso trabalho é descobrir o que pode ser demonstrado. Como seguimos?”',choices:[
+ {id:'align',label:'Comparar fontes, testar hipóteses e registrar dúvidas',next:'ending-align',conditions:[{type:'mastery',topic:'method',min:1}],effects:[{op:'relationship',key:'mara',amount:5},{op:'add',key:'risk',amount:3},{op:'set',key:'ending',value:'align'}]},
+ {id:'separate',label:'Suspender a divulgação até revisar os equipamentos',next:'ending-separate',effects:[{op:'set',key:'ending',value:'separate'}]},
+ {id:'rush',label:'Divulgar a descoberta imediatamente',next:'ending-rush',effects:[{op:'relationship',key:'mara',amount:-5},{op:'set',key:'ending',value:'rush'}]}
+ ]},
+ 'ending-align':{type:'ending',eyebrow:'06 / DESFECHO',title:'O método antes do mistério',text:'Sua análise revela um horário inconsistente. O sinal ainda é um enigma, mas agora existe um plano de investigação. Em um arquivo antigo, você encontra: ECHO-17.',note:'Boas investigações explicitam limites e testam explicações alternativas.',ending:'align'},
+ 'ending-separate':{type:'ending',eyebrow:'06 / DESFECHO',title:'O silêncio dos sensores',text:'A divulgação é adiada. Durante a revisão, uma pesquisadora encontra uma anotação escondida: ECHO-17.',note:'Adiar uma conclusão pode proteger a qualidade dos resultados.',ending:'separate'},
+ 'ending-rush':{type:'ending',eyebrow:'06 / DESFECHO',title:'A manchete errada',text:'A notícia se espalha, mas um registro incompatível derruba a hipótese. Uma mensagem anônima chega: “ECHO-17”.',note:'Uma hipótese precipitada pode ser revisitada, e novos testes podem corrigir o rumo.',ending:'rush'}
+ }
+};
